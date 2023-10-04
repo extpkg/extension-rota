@@ -152,3 +152,7 @@ ext.windows.onRemoved.addListener(async () => {
     console.log(error, "ext.windows.onRemoved");
   }
 });
+
+ext.runtime.onMessage.addListener(async (_event, details) => {
+  if (details === "quit") await destroyInstance();
+});

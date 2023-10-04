@@ -194,6 +194,12 @@
       ></div>
     </div>
 
+    <script>
+      window.quit = async () => {
+        await ext.runtime.sendMessage("quit");
+      };
+    </script>
+
     <script
       type="text/javascript"
       src="./app/index.js"
@@ -206,7 +212,7 @@
         canvasResizePolicy: 2,
         executable: "index",
         experimentalVK: false,
-        fileSizes: { "index.pck": 45707440, "index.wasm": 13790961 },
+        fileSizes: { "index.pck": 45707536, "index.wasm": 13790961 },
         focusCanvas: true,
         gdnativeLibs: [],
       };
