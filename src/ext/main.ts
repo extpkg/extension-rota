@@ -58,8 +58,13 @@ ext.runtime.onExtensionClick.addListener(async () => {
       aspectRatio: 1070 / 600,
     });
 
+    const permissions = await ext.runtime.getPermissions();
+    const persistent =
+      (permissions["websessions"] ?? {})["create.persistent"]?.granted ?? false;
+
     websession = await ext.websessions.create({
       partition: title,
+      persistent,
       global: false,
     });
 

@@ -3,7 +3,7 @@
   "name": "ROTA",
   "short_name": "ROTA",
   "description": "",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "EXT, Inc.",
   "icons": {
     "128": "./assets/128.png",
@@ -30,7 +30,7 @@
     },
     "websessions": {
       "permissions": [],
-      "optional_persmissions": ["create.persistent"],
+      "optional_permissions": ["create.persistent"],
       "module_version": "1.0.1"
     }
   }
