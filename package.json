@@ -1,0 +1,51 @@
+{
+  "name": "extension-rota",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production node ./scripts/build.mjs",
+    "dev": "nodemon",
+    "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,md}'",
+    "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' --quiet",
+    "lint:fix": "eslint 'src/**/*.{ts,tsx,js,jsx}' --fix",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/extpkg/extension-rota.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/extpkg/extension-rota/issues"
+  },
+  "homepage": "https://github.com/extpkg/extension-rota#readme",
+  "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "^0.17.7",
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@extpkg/types-console": "^1.0.1",
+    "@extpkg/types-runtime": "^1.2.2",
+    "@extpkg/types-tabs": "^1.1.0",
+    "@extpkg/types-websessions": "^1.0.1",
+    "@extpkg/types-webviews": "^1.0.2",
+    "@extpkg/types-windows": "^1.2.0",
+    "@types/node": "^20.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.19.3",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.1",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": "eslint"
+  }
+}

@@ -1,0 +1,103 @@
+name: Create Release and Upload ZIP
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - package.json
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Build project
+        run: bun run build
+
+      - name: Get the tag name
+        id: get_tag
+        run: |
+          PKG_VERSION="v$(jq -r '.version' package.json)"
+          echo "tag=$PKG_VERSION" >> $GITHUB_OUTPUT
+
+          if [[ $PKG_VERSION == *"alpha"* ]]; then
+            echo "override=alpha" >> $GITHUB_OUTPUT
+          elif [[ $PKG_VERSION == *"beta"* ]]; then
+            echo "override=beta" >> $GITHUB_OUTPUT
+          else
+            echo "override=latest" >> $GITHUB_OUTPUT  
+          fi
+
+      - name: Get the extension name
+        id: get_name
+        run: |
+          EXT_NAME=$(jq -r '.name' public/manifest.json)
+          echo "ext_name=$EXT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Create ZIP archive from dist
+        run: |
+          cd dist
+          zip -r ../${{ github.event.repository.name }}-${{ steps.get_tag.outputs.tag }}.zip .
+          cd ..
+          cp ${{ github.event.repository.name }}-${{ steps.get_tag.outputs.tag }}.zip ${{ github.event.repository.name }}-${{ steps.get_tag.outputs.override }}.zip
+
+      - name: Delete current release
+        run: |
+          gh release delete ${{ steps.get_tag.outputs.override }} --cleanup-tag -y
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create versioned release
+        id: create_prerelease
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.get_tag.outputs.tag }}
+          name:
+            ${{ steps.get_name.outputs.ext_name }} ${{
+            steps.get_tag.outputs.tag}}
+          artifacts:
+            "${{ github.event.repository.name }}-${{ steps.get_tag.outputs.tag
+            }}.zip"
+          artifactContentType: "application/zip"
+          body:
+            "This is the ${{ steps.get_tag.outputs.tag }} release of ${{
+            github.repository }}"
+          prerelease:
+            ${{ contains(steps.get_tag.outputs.tag, 'alpha') ||
+            contains(steps.get_tag.outputs.tag, 'beta') }}
+          makeLatest: false
+
+      - name: Create release
+        id: create_release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.get_tag.outputs.override }}
+          name:
+            ${{ steps.get_name.outputs.ext_name }} ${{
+            steps.get_tag.outputs.override }}
+          artifacts:
+            "${{ github.event.repository.name }}-${{
+            steps.get_tag.outputs.override }}.zip"
+          artifactContentType: "application/zip"
+          prerelease:
+            ${{ steps.get_tag.outputs.override == 'alpha' ||
+            steps.get_tag.outputs.override == 'beta'  }}
+          draft: false
+          body:
+            "This is the ${{ steps.get_tag.outputs.override }} release of ${{
+            github.repository }}"
+          makeLatest: ${{ steps.get_tag.outputs.override == 'latest' }}
