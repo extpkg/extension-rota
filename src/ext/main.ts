@@ -44,6 +44,8 @@ ext.runtime.onExtensionClick.addListener(async () => {
       mutable: true,
     });
 
+    const aspectRatio = 1280 / 720;
+
     window = await ext.windows.create({
       center: true,
       fullscreenable: true,
@@ -52,10 +54,10 @@ ext.runtime.onExtensionClick.addListener(async () => {
       vibrancy: false,
       frame: false,
       titleBarStyle: "inset",
-      width: 1070,
-      height: 600,
-      minWidth: 800,
-      aspectRatio: 1070 / 600,
+      width: 1280,
+      height: 720,
+      minWidth: 800 / aspectRatio,
+      aspectRatio,
     });
 
     const permissions = await ext.runtime.getPermissions();

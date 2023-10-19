@@ -1,13 +1,19 @@
 // @ts-check
 
 import * as esbuild from "esbuild";
-import { cp, existsSync, readFileSync, rm } from "fs";
-import { dirname } from "path";
+import { cpSync, existsSync, readFileSync, rm, writeFileSync } from "fs";
+import { dirname, resolve } from "path";
 import typescript from "typescript";
 import metaUrlPlugin from "@chialab/esbuild-plugin-meta-url";
 
 const mode = process.env["NODE_ENV"] ?? "development";
 const isDev = mode === "development";
+const __dirname = resolve();
+const dirs = {
+  source: resolve(__dirname, "src"),
+  public: resolve(__dirname, "public"),
+  dist: resolve(__dirname, "dist"),
+};
 
 /**
  * Reads typescript config
@@ -79,6 +85,35 @@ const typeCheck = () => {
   return !hasErrors;
 };
 
+const updateManifestWithPackageVersions = () => {
+  const packageJson = JSON.parse(
+    readFileSync(resolve(__dirname, "package.json"), "utf-8"),
+  );
+
+  const extpkgVersions = {};
+
+  for (const [key, value] of Object.entries(packageJson.devDependencies)) {
+    if (key.startsWith("@extpkg/types")) {
+      extpkgVersions[key.split("@extpkg/types-")[1]] = value.replace("^", "");
+    }
+  }
+
+  const manifestJson = JSON.parse(
+    readFileSync(resolve(dirs.dist, "manifest.json"), "utf-8"),
+  );
+
+  for (const [key, value] of Object.entries(extpkgVersions)) {
+    if (manifestJson.modules[key]) {
+      manifestJson.modules[key].module_version = value;
+    }
+  }
+
+  writeFileSync(
+    resolve(dirs.dist, "manifest.json"),
+    JSON.stringify(manifestJson, null, 2),
+  );
+};
+
 /**
  * @type {import('esbuild').BuildOptions}
  */
@@ -110,13 +145,14 @@ const extBuildOptions = {
 };
 
 const copyAssets = () => {
-  if (existsSync("./public"))
-    cp("./public/", "./dist/", { recursive: true }, (err) => {
-      if (err) console.error(err);
+  if (existsSync(dirs.public)) {
+    cpSync(dirs.public, dirs.dist, {
+      recursive: true,
     });
+  }
 };
 
-rm("./dist", { recursive: true, force: true }, (err) => {
+rm(dirs.dist, { recursive: true, force: true }, (err) => {
   if (err) console.error(err);
 });
 
@@ -127,3 +163,4 @@ if (!isTypeCheckOk) process.exit(1);
 await esbuild.build(extBuildOptions);
 
 copyAssets();
+updateManifestWithPackageVersions();
