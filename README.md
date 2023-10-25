@@ -1,5 +1,7 @@
 # ROTA
 
+Vibrant lands await! Explore, solve, and discover whimsical worlds!
+
 ## Build
 
 1. Clone the repository

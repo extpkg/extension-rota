@@ -132,5 +132,10 @@
         document.getElementById("frame").style.right = insetSize.width;
       }
     </script>
+    <script type="module">
+      window.quit = async () => {
+        await ext.runtime.sendMessage("quit");
+      };
+    </script>
   </body>
 </html>

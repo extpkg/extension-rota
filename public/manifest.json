@@ -2,8 +2,8 @@
   "manifest_version": "ext-v1",
   "name": "Rota",
   "short_name": "Rota",
-  "description": "Extension description",
-  "version": "1.0.0",
+  "description": "Vibrant lands await! Explore, solve, and discover whimsical worlds!",
+  "version": "1.0.1",
   "author": "EXT, Inc.",
   "icons": {
     "128": "./assets/128.png",

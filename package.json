@@ -1,7 +1,7 @@
 {
   "name": "extension-rota",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "Vibrant lands await! Explore, solve, and discover whimsical worlds!",
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_ENV=production node ./scripts/build.mjs",
