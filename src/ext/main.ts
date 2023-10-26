@@ -46,9 +46,11 @@ ext.runtime.onExtensionClick.addListener(async () => {
 
     const aspectRatio = 1280 / 720;
 
+    const { os } = await ext.runtime.getPlatformInfo();
+
     window = await ext.windows.create({
       center: true,
-      fullscreenable: true,
+      fullscreenable: os === "mac",
       title,
       icon: "./assets/128.png",
       vibrancy: false,
