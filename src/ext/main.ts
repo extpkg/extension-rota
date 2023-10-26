@@ -44,21 +44,23 @@ ext.runtime.onExtensionClick.addListener(async () => {
       mutable: true,
     });
 
-    const aspectRatio = 1280 / 720;
-
-    const { os } = await ext.runtime.getPlatformInfo();
+    const width = 1280;
+    const height = 720;
+    const aspectRatio = width / height;
 
     window = await ext.windows.create({
       center: true,
-      fullscreenable: os === "mac",
+      fullscreenable: true,
+      maximizable: false,
       title,
       icon: "./assets/128.png",
       vibrancy: false,
       frame: false,
       titleBarStyle: "inset",
-      width: 1280,
-      height: 720,
-      minWidth: 800 / aspectRatio,
+      width,
+      height,
+      minWidth: 1000,
+      minHeight: 1000 / aspectRatio,
       aspectRatio,
     });
 
