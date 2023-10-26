@@ -17,6 +17,7 @@
       html,
       body {
         height: 100%;
+        overflow: hidden;
       }
 
       #frame {
@@ -129,7 +130,7 @@
       const insetSize = await ext.windows.getInsetSize(window.id);
 
       if (platformInfo.os !== "mac" && insetSize) {
-        document.getElementById("frame").style.right = `${insetSize.width}`;
+        document.getElementById("frame").style.right = `${insetSize.width}px`;
       }
     </script>
     <script type="module">

@@ -3,7 +3,7 @@
   "name": "Rota",
   "short_name": "Rota",
   "description": "Vibrant lands await! Explore, solve, and discover whimsical worlds!",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "EXT, Inc.",
   "icons": {
     "128": "./assets/128.png",
