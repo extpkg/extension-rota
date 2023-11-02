@@ -80,8 +80,8 @@
       oncontextmenu="event.preventDefault();"
     >
       <video
-        id="animation"
-        src="./animation.mp4"
+        id="splash"
+        src="./splash.mp4"
         autoplay
       ></video>
     </div>
@@ -95,7 +95,21 @@
       const loader = document.getElementById("loader");
       const canvas = document.getElementById("canvas");
 
-      const animation = document.getElementById("animation");
+      const splash = document.getElementById("splash");
+      const markers = [
+        { start: 0.4, end: 0.92 },
+        { start: 2.2, end: 2.75 },
+        { start: 3.3, end: 4.15 },
+        { start: 4.45, end: Infinity },
+      ];
+
+      function findNextMarker(currentTime) {
+        if (currentTime < markers[0].start) return markers[0];
+
+        return markers.find(
+          (marker) => currentTime > marker.start && currentTime < marker.end,
+        );
+      }
 
       const engine = new Engine({
         args: [],
@@ -108,16 +122,15 @@
       });
 
       Promise.all([engine.init("index"), engine.preloadFile("index.pck")]).then(
-        () => {
-          if (animation.ended) {
-            engine.start({ args: ["--main-pack", myPck] });
-          } else {
-            animation.addEventListener("ended", () => {
-              loader.classList.add("hidden");
-              canvas.classList.remove("hidden");
-              engine.start({ args: ["--main-pack", "index.pck"] });
-            });
-          }
+        async () => {
+          const nextMarker = findNextMarker(splash.currentTime);
+          const timeToLaunch = nextMarker.start - splash.currentTime;
+
+          setTimeout(async () => {
+            await engine.start({ args: ["--main-pack", "index.pck"] });
+            splash.remove();
+            canvas.classList.remove("hidden");
+          }, timeToLaunch * 1000);
         },
       );
     </script>
