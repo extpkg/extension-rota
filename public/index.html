@@ -130,6 +130,7 @@
             await engine.start({ args: ["--main-pack", "index.pck"] });
             splash.remove();
             canvas.classList.remove("hidden");
+            canvas.focus();
           }, timeToLaunch * 1000);
         },
       );
