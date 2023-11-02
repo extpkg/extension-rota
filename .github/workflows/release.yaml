@@ -16,19 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v1
+      - uses: actions/setup-node@v3
         with:
-          bun-version: latest
+          node-version: "lts/*"
 
-      - run: bun install
-
-      - run: bun run build
+      - run: npm ci
 
       - name: Create EXT extension from dist
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > key.pem
-          bunx ext-packager pack ./dist -k key.pem -o ${{ vars.S3_FILE }} -f
-          bunx ext-packager pack ./dist -k key.pem -o ${{ vars.S3_FILE }} -f
+          npm run release -- ${{ vars.S3_FILE }}
 
       - name: Delete the current release
         run: |
@@ -51,8 +48,6 @@ jobs:
           name: ${{ steps.info.outputs.ext_name }}
           artifacts: ${{ vars.S3_FILE }}
           artifactContentType: "application/zip"
-          prerelease: false
-          draft: false
           body: "This is the latest release of ${{ github.repository }}"
           makeLatest: true
 
