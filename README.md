@@ -13,3 +13,6 @@ Vibrant lands await! Explore, solve, and discover whimsical worlds!
 
 Run `npm run dev` to watch `src` and `public` directories and rebuild the
 project on changes
+
+## Source
+https://github.com/HarmonyHoney/ROTA
