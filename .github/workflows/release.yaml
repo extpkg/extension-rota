@@ -25,14 +25,15 @@ jobs:
       - name: Create EXT extension from dist
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > key.pem
+          npm run build
           npm run release -- ${{ vars.S3_FILE }}
 
       - name: Delete the current release
-        run: |
-          gh release delete latest --cleanup-tag -y
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: dev-drprasad/delete-tag-and-release@v1.0.1
+        with:
+          tag_name: latest
+          delete_release: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cook release info
         id: info
@@ -46,7 +47,7 @@ jobs:
         with:
           tag: latest
           name: ${{ steps.info.outputs.ext_name }}
-          artifacts: ${{ vars.S3_FILE }}
+          artifacts: "${{ vars.S3_FILE }},dist.zip"
           artifactContentType: "application/zip"
           body: "This is the latest release of ${{ github.repository }}"
           makeLatest: true
